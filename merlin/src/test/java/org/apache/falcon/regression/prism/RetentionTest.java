@@ -20,7 +20,6 @@ package org.apache.falcon.regression.prism;
 
 
 import org.apache.falcon.regression.core.bundle.Bundle;
-import org.apache.falcon.entity.v0.Frequency;
 import org.apache.falcon.entity.v0.feed.Feed;
 import org.apache.falcon.entity.v0.feed.Location;
 import org.apache.falcon.entity.v0.feed.LocationType;
@@ -31,6 +30,7 @@ import org.apache.falcon.regression.core.enumsAndConstants.ENTITY_TYPE;
 import org.apache.falcon.regression.core.util.AssertUtil;
 import org.apache.falcon.regression.core.util.BundleUtil;
 import org.apache.falcon.regression.core.util.HadoopUtil;
+import org.apache.falcon.regression.core.util.InstanceUtil;
 import org.apache.falcon.regression.core.util.OSUtil;
 import org.apache.falcon.regression.core.util.OozieUtil;
 import org.apache.falcon.regression.core.util.Util;
@@ -56,11 +56,8 @@ import org.apache.log4j.Logger;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
 import java.io.IOException;
 import java.io.StringReader;
-import java.io.StringWriter;
 import java.lang.reflect.Method;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -106,9 +103,10 @@ public class RetentionTest extends BaseTestClass {
     @Test(groups = {"0.1", "0.2", "prism"}, dataProvider = "betterDP", priority = -1)
     public void testRetention(String period, String unit, boolean gaps, String dataType,
                               boolean withData) throws Exception {
-        String inputFeed = setFeedPathValue(BundleUtil.getInputFeedFromBundle(bundles[0]),
-            getFeedPathValue(dataType));
-        inputFeed = insertRetentionValueInFeed(inputFeed, unit + "(" + period + ")");
+        String inputFeed = InstanceUtil
+            .setFeedPathValue(BundleUtil.getInputFeedFromBundle(bundles[0]),
+                getFeedPathValue(dataType));
+        inputFeed = InstanceUtil.insertRetentionValueInFeed(inputFeed, unit + "(" + period + ")");
 
         bundles[0].submitClusters(prism);
 
@@ -123,22 +121,6 @@ public class RetentionTest extends BaseTestClass {
         } else {
             AssertUtil.assertFailed(response);
         }
-    }
-
-    private String setFeedPathValue(String feed, String pathValue) throws Exception {
-        JAXBContext feedContext = JAXBContext.newInstance(Feed.class);
-        Feed feedObject = (Feed) feedContext.createUnmarshaller().unmarshal(new StringReader(feed));
-
-        //set the value
-        for (Location location : feedObject.getLocations().getLocations()) {
-            if (location.getType().equals(LocationType.DATA)) {
-                location.setPath(pathValue);
-            }
-        }
-
-        StringWriter feedWriter = new StringWriter();
-        feedContext.createMarshaller().marshal(feedObject, feedWriter);
-        return feedWriter.toString();
     }
 
     private void replenishData(String dataType, boolean gap,
@@ -308,29 +290,6 @@ public class RetentionTest extends BaseTestClass {
                 deletedFolders.toArray(new String[deletedFolders.size()])),
             "It appears that the data that is received from queue and the data deleted are " +
                 "not same!");
-    }
-
-    private static String insertRetentionValueInFeed(String feed, String retentionValue)
-        throws JAXBException {
-        JAXBContext context = JAXBContext.newInstance(Feed.class);
-        Unmarshaller um = context.createUnmarshaller();
-        Feed feedObject = (Feed) um.unmarshal(new StringReader(feed));
-
-        //insert retentionclause
-        feedObject.getClusters().getClusters().get(0).getRetention()
-            .setLimit(new Frequency(retentionValue));
-
-        for (org.apache.falcon.entity.v0.feed.Cluster cluster : feedObject
-            .getClusters().getClusters()) {
-            cluster.getRetention().setLimit(new Frequency(retentionValue));
-        }
-
-        StringWriter writer = new StringWriter();
-        Marshaller m = context.createMarshaller();
-        m.marshal(feedObject, writer);
-
-        return writer.toString();
-
     }
 
     private void verifyFeedDeletion(String feed)

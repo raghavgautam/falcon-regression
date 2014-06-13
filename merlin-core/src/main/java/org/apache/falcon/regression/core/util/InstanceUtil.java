@@ -1340,5 +1340,44 @@ public class InstanceUtil {
         }
 
     }
+
+    public static String setFeedPathValue(String feed, String pathValue) throws Exception {
+        JAXBContext feedContext = JAXBContext.newInstance(Feed.class);
+        Feed feedObject = (Feed) feedContext.createUnmarshaller().unmarshal(new StringReader(feed));
+
+        //set the value
+        for (Location location : feedObject.getLocations().getLocations()) {
+            if (location.getType().equals(LocationType.DATA)) {
+                location.setPath(pathValue);
+            }
+        }
+
+        StringWriter feedWriter = new StringWriter();
+        feedContext.createMarshaller().marshal(feedObject, feedWriter);
+        return feedWriter.toString();
+    }
+
+    public static String insertRetentionValueInFeed(String feed, String retentionValue)
+        throws JAXBException {
+        JAXBContext context = JAXBContext.newInstance(Feed.class);
+        Unmarshaller um = context.createUnmarshaller();
+        Feed feedObject = (Feed) um.unmarshal(new StringReader(feed));
+
+        //insert retentionclause
+        feedObject.getClusters().getClusters().get(0).getRetention()
+            .setLimit(new Frequency(retentionValue));
+
+        for (Cluster cluster : feedObject
+            .getClusters().getClusters()) {
+            cluster.getRetention().setLimit(new Frequency(retentionValue));
+        }
+
+        StringWriter writer = new StringWriter();
+        Marshaller m = context.createMarshaller();
+        m.marshal(feedObject, writer);
+
+        return writer.toString();
+
+    }
 }
 
