@@ -706,7 +706,7 @@ public class InstanceUtil {
     }
 
     /**
-     * Sets one more cluster to feed.
+     * Adds one more cluster to feed.
      *
      * @param feed feed which is to be modified
      * @param feedValidity validity of the feed on the cluster
@@ -726,6 +726,20 @@ public class InstanceUtil {
             partition, null, locations);
     }
 
+    /**
+     * Adds one more cluster to feed.
+     *
+     * @param feed feed which is to be modified
+     * @param feedValidity validity of the feed on the cluster
+     * @param feedRetention set retention of the feed on the cluster
+     * @param clusterName cluster name, if null would erase all the cluster details from the feed
+     * @param clusterType cluster type
+     * @param partition partition where data is available for feed
+     * @param tableUri url of the table
+     * @param locations location where data is picked
+     * @return string representation of the modified feed
+     * @throws JAXBException
+     */
     public static String setFeedClusterWithTable(String feed, Validity feedValidity,
                                                  Retention feedRetention, String clusterName,
                                                  ClusterType clusterType, String partition,
