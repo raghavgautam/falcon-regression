@@ -181,6 +181,7 @@ public class OozieUtil {
             "Coordinator job should have got created by now.");
     }
 
+    @Deprecated
     public static String getBundleStatus(PrismHelper prismHelper, String bundleId)
         throws OozieClientException {
         XOozieClient oozieClient = prismHelper.getClusterHelper().getOozieClient();
@@ -207,6 +208,7 @@ public class OozieUtil {
         return getBundleIds(client, filter, 0, 10);
     }
 
+    @Deprecated
     public static List<DateTime> getStartTimeForRunningCoordinators(PrismHelper prismHelper,
                                                                     String bundleID)
         throws OozieClientException {
@@ -252,6 +254,7 @@ public class OozieUtil {
         return false;
     }
 
+    @Deprecated
     public static List<String> getMissingDependencies(PrismHelper helper, String bundleID)
         throws OozieClientException {
         BundleJob bundleJob = helper.getClusterHelper().getOozieClient().getBundleJobInfo(bundleID);
@@ -269,6 +272,7 @@ public class OozieUtil {
         return new ArrayList<String>(Arrays.asList(missingDependencies));
     }
 
+    @Deprecated
     public static List<String> getCoordinatorJobs(PrismHelper prismHelper, String bundleID)
         throws OozieClientException {
         XOozieClient oozieClient = prismHelper.getClusterHelper().getOozieClient();
@@ -287,6 +291,7 @@ public class OozieUtil {
 
     }
 
+    @Deprecated
     public static Date getNominalTime(PrismHelper prismHelper, String bundleID)
         throws OozieClientException {
         XOozieClient oozieClient = prismHelper.getClusterHelper().getOozieClient();
@@ -299,6 +304,7 @@ public class OozieUtil {
 
     }
 
+    @Deprecated
     public static CoordinatorJob getDefaultOozieCoord(PrismHelper prismHelper, String bundleId,
                                                       ENTITY_TYPE type)
         throws OozieClientException {
@@ -319,12 +325,14 @@ public class OozieUtil {
         return null;
     }
 
+    @Deprecated
     public static int getNumberOfWorkflowInstances(PrismHelper prismHelper, String bundleId)
         throws OozieClientException {
         return getDefaultOozieCoord(prismHelper, bundleId,
             ENTITY_TYPE.PROCESS).getActions().size();
     }
 
+    @Deprecated
     public static List<String> getActionsNominalTime(PrismHelper prismHelper,
                                                      String bundleId,
                                                      ENTITY_TYPE type)
@@ -337,6 +345,7 @@ public class OozieUtil {
         return nominalTime;
     }
 
+    @Deprecated
     public static Map<Date, CoordinatorAction.Status> getActionsNominalTimeAndStatus(PrismHelper prismHelper, String bundleId,
                                                                        ENTITY_TYPE type) throws OozieClientException {
         Map<Date, CoordinatorAction.Status> result = new TreeMap<Date, CoordinatorAction.Status>();
@@ -348,6 +357,7 @@ public class OozieUtil {
         return result;
     }
 
+    @Deprecated
     public static boolean isBundleOver(ColoHelper coloHelper, String bundleId)
         throws OozieClientException {
         XOozieClient client = coloHelper.getClusterHelper().getOozieClient();
@@ -370,6 +380,7 @@ public class OozieUtil {
         return false;
     }
 
+    @Deprecated
     public static void verifyNewBundleCreation(ColoHelper cluster,
                                                String originalBundleId,
                                                List<String>
@@ -399,6 +410,7 @@ public class OozieUtil {
         }
     }
 
+    @Deprecated
     private static void validateNumberOfWorkflowInstances(ColoHelper cluster,
                                                           List<String> initialNominalTimes,
                                                           String originalBundleId,
@@ -432,6 +444,7 @@ public class OozieUtil {
         return concatenated;
     }
 
+    @Deprecated
     public static String getCoordStartTime(ColoHelper colo, String entity,
                                            int bundleNo)
         throws JAXBException, OozieClientException {
