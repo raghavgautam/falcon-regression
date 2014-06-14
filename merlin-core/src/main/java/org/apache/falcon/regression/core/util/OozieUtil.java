@@ -275,20 +275,20 @@ public class OozieUtil {
     @Deprecated
     public static List<String> getCoordinatorJobs(PrismHelper prismHelper, String bundleID)
         throws OozieClientException {
-        XOozieClient oozieClient = prismHelper.getClusterHelper().getOozieClient();
+        return getCoordinatorJobs(prismHelper.getClusterHelper().getOozieClient(), bundleID);
+    }
+
+    public static List<String> getCoordinatorJobs(OozieClient oozieClient, String bundleID)
+        throws OozieClientException {
         waitForCoordinatorJobCreation(oozieClient, bundleID);
         List<String> jobIds = new ArrayList<String>();
         BundleJob bundleJob = oozieClient.getBundleJobInfo(bundleID);
         CoordinatorJob jobInfo =
             oozieClient.getCoordJobInfo(bundleJob.getCoordinators().get(0).getId());
-
         for (CoordinatorAction action : jobInfo.getActions()) {
             jobIds.add(action.getExternalId());
         }
-
-
         return jobIds;
-
     }
 
     @Deprecated
