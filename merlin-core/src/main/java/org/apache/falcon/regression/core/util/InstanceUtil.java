@@ -367,7 +367,7 @@ public class InstanceUtil {
             processName, ENTITY_TYPE.PROCESS).get(0);
         OozieClient oozieClient = prismHelper.getClusterHelper().getOozieClient();
 
-        List<String> workflows = OozieUtil.getCoordinatorJobs(prismHelper, bundleID);
+        List<String> workflows = OozieUtil.getWorkflowJobs(prismHelper, bundleID);
 
         List<String> toBeReturned = new ArrayList<String>();
         for (String jobID : workflows) {

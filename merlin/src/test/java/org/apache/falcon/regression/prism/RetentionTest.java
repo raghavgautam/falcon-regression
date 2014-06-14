@@ -256,7 +256,7 @@ public class RetentionTest extends BaseTestClass {
         //just verify that each element in queue is same as deleted data!
         input.removeAll(expectedOutput);
 
-        List<String> jobIds = OozieUtil.getCoordinatorJobs(cluster,
+        List<String> jobIds = OozieUtil.getWorkflowJobs(cluster,
             OozieUtil.getBundles(clusterOC,
                 feedName, ENTITY_TYPE.FEED).get(0)
         );
